@@ -23,9 +23,9 @@ export default function Home() {
   return (
     <>
       <Seo
-        title="Antique"
+        title="Grocery & Food Store React Template"
         description="Fastest E-commerce template built with React, NextJS, TypeScript, React-Query and Tailwind CSS."
-        path="antique"
+        path="/"
       />
 
       <HeroBannerCard

@@ -62,6 +62,7 @@ const CategoryGridListBlock: React.FC<CategoriesProps> = ({
     limit: 16,
   });
 
+  console.log({ data });
   return (
     <div className={cn(className)}>
       <div className={`${variant !== 'antique' ? 'pt-0.5 pb-1.5' : ''}`}>

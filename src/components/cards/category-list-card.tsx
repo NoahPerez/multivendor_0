@@ -19,7 +19,8 @@ const CategoryListCard: React.FC<Props> = ({
   href,
   variant = 'default',
 }) => {
-  const { name, icon } = category;
+  const { name, image } = category;
+  console.log({ image });
   const { t } = useTranslation('common');
   return (
     <Link href={href}>
@@ -57,7 +58,7 @@ const CategoryListCard: React.FC<Props> = ({
             )}
           >
             <Image
-              src={icon ?? '/assets/placeholder/category-small.svg'}
+              src={image?.src ?? '/assets/placeholder/category-small.svg'}
               alt={name || t('text-category-thumbnail')}
               width={variant === 'antique' ? 80 : 40}
               height={variant === 'antique' ? 80 : 40}

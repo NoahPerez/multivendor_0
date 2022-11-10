@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { signIn, getSession, getProviders } from 'next-auth/react';
+
 import Input from '@components/ui/form/input';
 import PasswordInput from '@components/ui/form/password-input';
 import Button from '@components/ui/button';
@@ -23,6 +25,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ isPopup = true, className }) => {
   const { closeModal, openModal } = useModalAction();
   const { mutate: login, isLoading } = useLoginMutation();
   const [remember, setRemember] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const {
     register,
@@ -30,29 +33,44 @@ const LoginForm: React.FC<LoginFormProps> = ({ isPopup = true, className }) => {
     formState: { errors },
   } = useForm<LoginInputType>();
 
-  function onSubmit({ email, password, remember_me }: LoginInputType) {
-    login({
-      email,
-      password,
-      remember_me,
+  const [providers, setProviders] = useState<any>({});
+
+  useEffect(() => {
+    getProviders().then((prov) => {
+      setProviders(prov);
     });
+  }, []);
+
+  const onLoginUser = async ({ email, password }: LoginInputType) => {
+    setShowError(false);
+    await signIn('credentials', { email, password });
+
     closeModal();
-    console.log(email, password, remember_me, 'data');
-  }
-  function handelSocialLogin() {
-    login({
-      email: 'demo@demo.com',
-      password: 'demo',
-      remember_me: true,
-    });
-    closeModal();
-  }
-  function handleSignUp() {
-    return openModal('SIGN_UP_VIEW');
-  }
-  function handleForgetPassword() {
-    return openModal('FORGET_PASSWORD');
-  }
+  };
+
+  // function onSubmit({ email, password, remember_me }: LoginInputType) {
+  //   login({
+  //     email,
+  //     password,
+  //     remember_me,
+  //   });
+  //   closeModal();
+  //   console.log(email, password, remember_me, 'data');
+  // }
+  // function handelSocialLogin() {
+  //   login({
+  //     email: 'demo@demo.com',
+  //     password: 'demo',
+  //     remember_me: true,
+  //   });
+  //   closeModal();
+  // }
+  // function handleSignUp() {
+  //   return openModal('SIGN_UP_VIEW');
+  // }
+  // function handleForgetPassword() {
+  //   return openModal('FORGET_PASSWORD');
+  // }
   return (
     <div
       className={cn(
@@ -83,14 +101,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ isPopup = true, className }) => {
               <button
                 type="button"
                 className="text-sm font-semibold text-brand sm:text-15px ltr:ml-1 rtl:mr-1 hover:no-underline focus:outline-none"
-                onClick={handleSignUp}
+                // onClick={handleSignUp}
               >
                 {t('common:text-create-account')}
               </button>
             </div>
           </div>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(onLoginUser)}
             className="flex flex-col justify-center"
             noValidate
           >
@@ -131,7 +149,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ isPopup = true, className }) => {
                 <div className="flex ltr:ml-auto rtl:mr-auto mt-[3px]">
                   <button
                     type="button"
-                    onClick={handleForgetPassword}
+                    // onClick={handleForgetPassword}
                     className="text-sm ltr:text-right rtl:text-left text-heading ltr:pl-3 lg:rtl:pr-3 hover:no-underline hover:text-brand-dark focus:outline-none focus:text-brand-dark"
                   >
                     {t('common:text-forgot-password')}
@@ -160,19 +178,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ isPopup = true, className }) => {
           <div className="flex justify-center mt-5 space-x-2.5">
             <button
               className="flex items-center justify-center w-10 h-10 transition-all border rounded-full cursor-pointer group border-border-one hover:border-brand focus:border-brand focus:outline-none"
-              onClick={handelSocialLogin}
+              // onClick={handelSocialLogin}
             >
               <FaFacebook className="w-4 h-4 text-opacity-50 transition-all text-brand-dark group-hover:text-brand " />
             </button>
             <button
               className="flex items-center justify-center w-10 h-10 transition-all border rounded-full cursor-pointer group border-border-one hover:border-brand focus:border-brand focus:outline-none"
-              onClick={handelSocialLogin}
+              // onClick={handelSocialLogin}
             >
               <FaTwitter className="w-4 h-4 text-opacity-50 transition-all text-brand-dark group-hover:text-brand" />
             </button>
             <button
               className="flex items-center justify-center w-10 h-10 transition-all border rounded-full cursor-pointer group border-border-one hover:border-brand focus:border-brand focus:outline-none"
-              onClick={handelSocialLogin}
+              // onClick={handelSocialLogin}
             >
               <FaLinkedinIn className="w-4 h-4 text-opacity-50 transition-all text-brand-dark group-hover:text-brand" />
             </button>

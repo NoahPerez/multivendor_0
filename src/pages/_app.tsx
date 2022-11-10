@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import { SessionProvider } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { ManagedUIContext } from '@contexts/ui.context';
 import ManagedModal from '@components/common/modal/managed-modal';
@@ -20,6 +21,7 @@ import '@assets/css/swiper-carousel.css';
 import '@assets/css/custom-plugins.css';
 import '@assets/css/globals.css';
 import { getDirection } from '@utils/get-direction';
+import { AuthProvider } from 'src/context';
 
 const Noop: React.FC = ({ children }) => <>{children}</>;
 
@@ -36,22 +38,26 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
   const Layout = (Component as any).Layout || Noop;
 
   return (
-    <QueryClientProvider client={queryClientRef.current}>
-      <Hydrate state={pageProps.dehydratedState}>
-        <ManagedUIContext>
-          <>
-            <DefaultSeo />
-            <Layout pageProps={pageProps}>
-              <Component {...pageProps} key={router.route} />
-            </Layout>
-            <ToastContainer />
-            <ManagedModal />
-            <ManagedDrawer />
-          </>
-        </ManagedUIContext>
-      </Hydrate>
-      {/* <ReactQueryDevtools /> */}
-    </QueryClientProvider>
+    <SessionProvider>
+      <QueryClientProvider client={queryClientRef.current}>
+        <Hydrate state={pageProps.dehydratedState}>
+          <AuthProvider>
+            <ManagedUIContext>
+              <>
+                <DefaultSeo />
+                <Layout pageProps={pageProps}>
+                  <Component {...pageProps} key={router.route} />
+                </Layout>
+                <ToastContainer />
+                <ManagedModal />
+                <ManagedDrawer />
+              </>
+            </ManagedUIContext>
+          </AuthProvider>
+        </Hydrate>
+        {/* <ReactQueryDevtools /> */}
+      </QueryClientProvider>
+    </SessionProvider>
   );
 };
 
